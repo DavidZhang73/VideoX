@@ -59,7 +59,7 @@ TAN:
     PARAMS:
       HIDDEN_SIZE: 512
       TXT_INPUT_SIZE: 300
-      TXT_HIDDEN_SIZE: 512
+      TXT_HIDDEN_SIZE: 768
       LSTM:
         NUM_LAYERS: 3
         BIDIRECTIONAL: False
