@@ -1,14 +1,12 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
-import os
 import logging
+import os
 import time
 from pathlib import Path
 
-class AverageMeter(object):
+
+class AverageMeter:
     """Computes and stores the average and current value"""
+
     def __init__(self):
         self.reset()
 
@@ -24,29 +22,30 @@ class AverageMeter(object):
         self.count += n
         self.avg = self.sum / self.count
 
-def create_logger(cfg, cfg_name, tag='train'):
+
+def create_logger(cfg, cfg_name, tag="train"):
     root_log_dir = Path(cfg.LOG_DIR)
     # set up logger
     if not root_log_dir.exists():
-        print('=> creating {}'.format(root_log_dir))
+        print(f"=> creating {root_log_dir}")
         root_log_dir.mkdir()
 
     dataset = cfg.DATASET.NAME
-    cfg_name = os.path.basename(cfg_name).split('.yaml')[0]
+    cfg_name = os.path.basename(cfg_name).split(".yaml")[0]
 
     final_log_dir = root_log_dir / dataset / cfg_name
 
-    print('=> creating {}'.format(final_log_dir))
+    print(f"=> creating {final_log_dir}")
     final_log_dir.mkdir(parents=True, exist_ok=True)
 
-    time_str = time.strftime('%Y-%m-%d-%H-%M')
-    log_file = '{}_{}_{}.log'.format(cfg_name, time_str, tag)
+    time_str = time.strftime("%Y-%m-%d-%H-%M")
+    log_file = f"{cfg_name}_{time_str}_{tag}.log"
     final_log_file = final_log_dir / log_file
-    head = '%(asctime)-15s %(message)s'
+    head = "%(asctime)-15s %(message)s"
     logging.basicConfig(filename=str(final_log_file), format=head)
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
     console = logging.StreamHandler()
-    logging.getLogger('').addHandler(console)
+    logging.getLogger("").addHandler(console)
 
     return logger, str(final_log_dir)

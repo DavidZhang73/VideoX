@@ -1,0 +1,64 @@
+{
+    // 使用 IntelliSense 了解相关属性。
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Train IAW Conv (Debug)",
+            "type": "python",
+            "request": "launch",
+            "program": "moment_localization/train.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/2D-TAN/lib",
+                "CUDA_VISIBLE_DEVICES": "1"
+            },
+            "args": [
+                "--cfg",
+                "experiments/iaw/2D-TAN-conv.yaml",
+                "--verbose",
+            ],
+            "cwd": "${workspaceFolder}/2D-TAN",
+        },
+        {
+            "name": "Train Tacos Pool",
+            "type": "python",
+            "request": "launch",
+            "program": "moment_localization/train.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/2D-TAN/lib",
+                "CUDA_VISIBLE_DEVICES": "1"
+            },
+            "args": [
+                "--cfg",
+                "experiments/tacos/2D-TAN-128x128-K5L8-pool.yaml",
+                "--verbose",
+            ],
+            "cwd": "${workspaceFolder}/2D-TAN",
+        },
+        {
+            "name": "Test Tacos Pool",
+            "type": "python",
+            "request": "launch",
+            "program": "moment_localization/test.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/2D-TAN/lib",
+                "CUDA_VISIBLE_DEVICES": "1"
+            },
+            "args": [
+                "--cfg",
+                "experiments/tacos/2D-TAN-128x128-K5L8-pool.yaml",
+                "--verbose",
+                "--split",
+                "test"
+            ],
+            "cwd": "${workspaceFolder}/2D-TAN",
+        }
+    ]
+}

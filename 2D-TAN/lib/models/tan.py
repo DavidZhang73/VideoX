@@ -1,13 +1,12 @@
-from torch import nn
 from core.config import config
-import models.frame_modules as frame_modules
-import models.prop_modules as prop_modules
-import models.map_modules as map_modules
-import models.fusion_modules as fusion_modules
+from torch import nn
+
+from models import frame_modules, fusion_modules, map_modules, prop_modules
+
 
 class TAN(nn.Module):
     def __init__(self):
-        super(TAN, self).__init__()
+        super().__init__()
 
         self.frame_layer = getattr(frame_modules, config.TAN.FRAME_MODULE.NAME)(config.TAN.FRAME_MODULE.PARAMS)
         self.prop_layer = getattr(prop_modules, config.TAN.PROP_MODULE.NAME)(config.TAN.PROP_MODULE.PARAMS)
@@ -16,7 +15,6 @@ class TAN(nn.Module):
         self.pred_layer = nn.Conv2d(config.TAN.PRED_INPUT_SIZE, 1, 1, 1)
 
     def forward(self, textual_input, textual_mask, visual_input):
-
         vis_h = self.frame_layer(visual_input.transpose(1, 2))
         map_h, map_mask = self.prop_layer(vis_h)
         fused_h = self.fusion_layer(textual_input, textual_mask, map_h, map_mask)

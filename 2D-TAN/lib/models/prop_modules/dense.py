@@ -1,13 +1,11 @@
 from torch import nn
 
+
 class PropMaxPool(nn.Module):
     def __init__(self, cfg):
-        super(PropMaxPool, self).__init__()
+        super().__init__()
         num_layers = cfg.NUM_LAYERS
-        self.layers = nn.ModuleList(
-            [nn.Identity()]
-            +[nn.MaxPool1d(2, stride=1) for _ in range(num_layers-1)]
-        )
+        self.layers = nn.ModuleList([nn.Identity()] + [nn.MaxPool1d(2, stride=1) for _ in range(num_layers - 1)])
         self.num_layers = num_layers
 
     def forward(self, x):
