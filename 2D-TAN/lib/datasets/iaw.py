@@ -42,11 +42,13 @@ class IAW(data.Dataset):
             furniture_id = furniture["id"]
             for video in furniture["videoList"]:
                 video_id = video["url"].split("/watch?v=")[-1]
-                key = f"{furniture_id}_{video_id}"
-                for a in video["annotation"]:
+                for i, a in enumerate(video["annotation"]):
+                    video_key = f"{furniture_id}_{video_id}"
+                    key = f"{furniture_id}_{video_id}_{i}"
                     annotation.append(
                         {
                             "key": key,
+                            "video_key": video_key,
                             "duration": video["duration"],
                             "times": [a["start"], a["end"]],
                             "action": a["action"],  # int, action id
@@ -61,14 +63,14 @@ class IAW(data.Dataset):
         )
 
     def __getitem__(self, index: int):
-        key = self.annotations[index]["key"]
+        video_key = self.annotations[index]["video_key"]
         gt_s_time, gt_e_time = self.annotations[index]["times"]
         action_id = self.annotations[index]["action"]
         duration = self.annotations[index]["duration"]
 
-        word_vectors = self.diagram_features[key.split("_")[0]][action_id]
+        word_vectors = self.diagram_features[video_key.split("_")[0]][action_id]
 
-        visual_input, visual_mask = self.get_video_features(key)
+        visual_input, visual_mask = self.get_video_features(video_key)
         visual_input = average_to_fixed_length(visual_input)
         num_clips = config.DATASET.NUM_SAMPLE_CLIPS // config.DATASET.TARGET_STRIDE
         s_times = torch.arange(0, num_clips).float() * duration / num_clips

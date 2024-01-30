@@ -1,8 +1,9 @@
 WORKERS: 16
+
 MODEL_DIR: /data/jiahao/logs/2dtan/checkpoints
 RESULT_DIR: ./results
 LOG_DIR: ./log
-DATA_DIR: /data/jiahao/IKEAAssemblyInstructionDataset/dataset
+DATA_DIR:  /data/jiahao/IKEAAssemblyInstructionDataset/dataset
 
 DATASET:
   NAME: IAW
@@ -17,8 +18,8 @@ TEST:
   BATCH_SIZE: 32
   RECALL: 1,5
   TIOU: 0.1,0.3,0.5,0.7
-  EVAL_TRAIN: False
-  NMS_THRESH: 0.5
+  EVAL_TRAIN: True
+  NMS_THRESH: 0.4
 
 CUDNN:
   DETERMINISTIC: False
@@ -49,9 +50,8 @@ TAN:
       STRIDE: 2
 
   PROP_MODULE:
-    NAME: SparsePropConv
+    NAME: SparsePropMaxPool
     PARAMS:
-      HIDDEN_SIZE: 512
       NUM_SCALE_LAYERS: [16,8,8,8]
 
   FUSION_MODULE:
@@ -78,4 +78,4 @@ TAN:
 
 MODEL:
   NAME: TAN
-  CHECKPOINT: ./checkpoints/IAW/TAN_c3d/iter005852-0.4208-0.6247.pkl
+  CHECKPOINT: ./checkpoints/IAW/

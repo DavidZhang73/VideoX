@@ -60,7 +60,8 @@ def reset_config(config, args):
 def save_scores(scores, data, dataset_name, split):
     results = {}
     for i, d in enumerate(data):
-        results[d["video"]] = scores[i]
+        results[d["key"]] = dict(scores=scores[i], data=d)
+    os.makedirs(os.path.join(config.RESULT_DIR, dataset_name), exist_ok=True)
     pkl.dump(
         results,
         open(
@@ -162,7 +163,7 @@ if __name__ == "__main__":
         table_message = "\n" + test_table
         print(table_message)
 
-        # save_scores(state['sorted_segments_list'], annotations, config.DATASET.NAME, args.split)
+        save_scores(state["sorted_segments_list"], annotations, config.DATASET.NAME, args.split)
 
     engine = Engine()
     engine.hooks["on_test_start"] = on_test_start

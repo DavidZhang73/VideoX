@@ -21,6 +21,7 @@ def iou(pred, gt):  # require pred and gt is numpy
     union_left = np.minimum(pred[:, 0, None], gt[None, :, 0])
     union_right = np.maximum(pred[:, 1, None], gt[None, :, 1])
     union = np.maximum(0.0, union_right - union_left)
+    union += 1e-8
     overlap = 1.0 * inter / union
     if not gt_is_list:
         overlap = overlap[:, 0]

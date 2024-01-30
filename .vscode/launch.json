@@ -23,25 +23,7 @@
             "cwd": "${workspaceFolder}/2D-TAN",
         },
         {
-            "name": "Train Tacos Pool",
-            "type": "python",
-            "request": "launch",
-            "program": "moment_localization/train.py",
-            "console": "integratedTerminal",
-            "justMyCode": false,
-            "env": {
-                "PYTHONPATH": "${workspaceFolder}/2D-TAN/lib",
-                "CUDA_VISIBLE_DEVICES": "1"
-            },
-            "args": [
-                "--cfg",
-                "experiments/tacos/2D-TAN-128x128-K5L8-pool.yaml",
-                "--verbose",
-            ],
-            "cwd": "${workspaceFolder}/2D-TAN",
-        },
-        {
-            "name": "Test Tacos Pool",
+            "name": "Test IAW Conv (Debug)",
             "type": "python",
             "request": "launch",
             "program": "moment_localization/test.py",
@@ -49,11 +31,11 @@
             "justMyCode": false,
             "env": {
                 "PYTHONPATH": "${workspaceFolder}/2D-TAN/lib",
-                "CUDA_VISIBLE_DEVICES": "1"
+                "CUDA_VISIBLE_DEVICES": "3"
             },
             "args": [
                 "--cfg",
-                "experiments/tacos/2D-TAN-128x128-K5L8-pool.yaml",
+                "experiments/iaw/2D-TAN-conv.yaml",
                 "--verbose",
                 "--split",
                 "test"
