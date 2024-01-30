@@ -2,7 +2,7 @@ WORKERS: 16
 
 MODEL_DIR: /data/jiahao/logs/2dtan/checkpoints
 RESULT_DIR: ./results
-LOG_DIR: ./log
+LOG_DIR: /data/jiahao/logs/2dtan/
 DATA_DIR:  /data/jiahao/IKEAAssemblyInstructionDataset/dataset
 
 DATASET:
@@ -18,7 +18,7 @@ TEST:
   BATCH_SIZE: 32
   RECALL: 1,5
   TIOU: 0.1,0.3,0.5,0.7
-  EVAL_TRAIN: True
+  EVAL_TRAIN: False
   NMS_THRESH: 0.4
 
 CUDNN:

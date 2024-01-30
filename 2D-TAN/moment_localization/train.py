@@ -228,29 +228,33 @@ if __name__ == "__main__":
             message = loss_message + table_message + "\n"
             logger.info(message)
 
+            saved_model_path = os.path.join(
+                os.path.dirname(logger.root.handlers[0].baseFilename),
+                "checkpoins",
+            )
+            os.makedirs(saved_model_path, exist_ok=True)
             saved_model_filename = os.path.join(
-                config.MODEL_DIR,
-                "{}/{}/iter{:06d}-{:.4f}-{:.4f}.pkl".format(
-                    dataset_name,
-                    model_name + "_" + config.DATASET.VIS_INPUT_TYPE,
+                saved_model_path,
+                "iter{:06d}-{:.4f}-{:.4f}.pkl".format(
                     state["t"],
                     test_state["Rank@N,mIoU@M"][0, 0],
                     test_state["Rank@N,mIoU@M"][0, 1],
                 ),
             )
 
-            rootfolder1 = os.path.dirname(saved_model_filename)
-            rootfolder2 = os.path.dirname(rootfolder1)
-            rootfolder3 = os.path.dirname(rootfolder2)
-            if not os.path.exists(rootfolder3):
-                print("Make directory %s ..." % rootfolder3)
-                os.mkdir(rootfolder3)
-            if not os.path.exists(rootfolder2):
-                print("Make directory %s ..." % rootfolder2)
-                os.mkdir(rootfolder2)
-            if not os.path.exists(rootfolder1):
-                print("Make directory %s ..." % rootfolder1)
-                os.mkdir(rootfolder1)
+            # rootfolder1 = os.path.dirname(saved_model_filename)
+            # os.makedirs(rootfolder1, exist_ok=True)
+            # rootfolder2 = os.path.dirname(rootfolder1)
+            # rootfolder3 = os.path.dirname(rootfolder2)
+            # if not os.path.exists(rootfolder3):
+            #     print("Make directory %s ..." % rootfolder3)
+            #     os.mkdir(rootfolder3)
+            # if not os.path.exists(rootfolder2):
+            #     print("Make directory %s ..." % rootfolder2)
+            #     os.mkdir(rootfolder2)
+            # if not os.path.exists(rootfolder1):
+            #     print("Make directory %s ..." % rootfolder1)
+            #     os.mkdir(rootfolder1)
 
             if torch.cuda.device_count() > 1:
                 torch.save(model.module.state_dict(), saved_model_filename)

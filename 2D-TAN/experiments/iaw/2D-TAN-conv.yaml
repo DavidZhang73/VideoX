@@ -1,7 +1,7 @@
 WORKERS: 16
 MODEL_DIR: /data/jiahao/logs/2dtan/checkpoints
 RESULT_DIR: ./results
-LOG_DIR: ./log
+LOG_DIR: /data/jiahao/logs/2dtan/
 DATA_DIR: /data/jiahao/IKEAAssemblyInstructionDataset/dataset
 
 DATASET:
