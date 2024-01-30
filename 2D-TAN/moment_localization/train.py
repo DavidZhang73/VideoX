@@ -198,8 +198,8 @@ if __name__ == "__main__":
         if config.VERBOSE:
             state["progress_bar"].update(1)
 
-        if state["t"] % 50 == 0:
-            wandb.log({"train/loss": state["loss_meter"].avg}, step=state["t"], epoch=state["epoch"])
+        if state["t"] % 10 == 0:
+            wandb.log({"train/loss": state["loss_meter"].avg, "epoch": state["epoch"]}, step=state["t"])
 
         if state["t"] % state["test_interval"] == 0:
             model.eval()
@@ -216,14 +216,14 @@ if __name__ == "__main__":
                 val_state = engine.test(network, iterator("val"), "val")
                 state["scheduler"].step(-val_state["loss_meter"].avg)
                 loss_message += " val loss {:.4f}".format(val_state["loss_meter"].avg)
-                wandb.log({"val/loss": val_state["loss_meter"].avg}, step=state["t"])
+                wandb.log({"val/loss": val_state["loss_meter"].avg, "epoch": state["epoch"]}, step=state["t"])
                 val_state["loss_meter"].reset()
                 val_table = eval.display_results(val_state["Rank@N,mIoU@M"], val_state["miou"], "val")
                 table_message += "\n" + val_table
 
             test_state = engine.test(network, iterator("test"), "test")
             loss_message += " test loss {:.4f}".format(test_state["loss_meter"].avg)
-            wandb.log({"test/loss": test_state["loss_meter"].avg}, step=state["t"])
+            wandb.log({"test/loss": test_state["loss_meter"].avg, "epoch": state["epoch"]}, step=state["t"])
             test_state["loss_meter"].reset()
             test_table = eval.display_results(test_state["Rank@N,mIoU@M"], test_state["miou"], "test")
             table_message += "\n" + test_table
