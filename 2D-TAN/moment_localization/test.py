@@ -7,6 +7,7 @@ import datasets
 import models
 import numpy as np
 import torch
+import wandb
 from core.config import config, update_config
 from core.engine import Engine
 from core.eval import display_results, eval_predictions
@@ -76,6 +77,8 @@ def save_scores(scores, data, dataset_name, split):
 if __name__ == "__main__":
     args = parse_args()
     reset_config(config, args)
+
+    wandb_run = wandb.init(project="2DTAN", dir=config.LOG_DIR, config=config)
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model = getattr(models, config.MODEL.NAME)()
@@ -153,13 +156,13 @@ if __name__ == "__main__":
 
         annotations = test_dataset.annotations
         state["Rank@N,mIoU@M"], state["miou"] = eval_predictions(
-            state["sorted_segments_list"], annotations, verbose=True
+            state["sorted_segments_list"], annotations, "test", verbose=True
         )
 
         loss_message = "\ntest loss {:.4f}".format(state["loss_meter"].avg)
         print(loss_message)
         state["loss_meter"].reset()
-        test_table = display_results(state["Rank@N,mIoU@M"], state["miou"], "performance on testing set")
+        test_table = display_results(state["Rank@N,mIoU@M"], state["miou"], "test")
         table_message = "\n" + test_table
         print(table_message)
 

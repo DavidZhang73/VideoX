@@ -1,4 +1,4 @@
-WORKERS: 16
+WORKERS: 8
 
 MODEL_DIR: /data/jiahao/logs/2dtan/checkpoints
 RESULT_DIR: ./results

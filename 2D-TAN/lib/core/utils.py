@@ -42,7 +42,8 @@ def create_logger(cfg, cfg_name, tag="train"):
     log_file = f"{cfg_name}_{time_str}_{tag}.log"
     final_log_file = final_log_dir / log_file
     head = "%(asctime)-15s %(message)s"
-    logging.basicConfig(filename=str(final_log_file), format=head)
+    # logging.basicConfig(filename=str(final_log_file), format=head)
+    logging.basicConfig(format=head)
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
     console = logging.StreamHandler()

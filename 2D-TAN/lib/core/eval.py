@@ -4,6 +4,7 @@ import json
 import numpy as np
 from core.config import config, update_config
 from terminaltables import AsciiTable
+import wandb
 
 
 def iou(pred, gt):  # require pred and gt is numpy
@@ -82,15 +83,15 @@ def eval(segments, data):
     return eval_result, miou
 
 
-def eval_predictions(segments, data, verbose=True):
+def eval_predictions(segments, data, split, verbose=True):
     eval_result, miou = eval(segments, data)
     if verbose:
-        print(display_results(eval_result, miou, ""))
+        print(display_results(eval_result, miou, split))
 
     return eval_result, miou
 
 
-def display_results(eval_result, miou, title=None):
+def display_results(eval_result, miou, split):
     tious = [float(i) for i in config.TEST.TIOU.split(",")] if isinstance(config.TEST.TIOU, str) else [config.TEST.TIOU]
     recalls = (
         [int(i) for i in config.TEST.RECALL.split(",")] if isinstance(config.TEST.RECALL, str) else [config.TEST.RECALL]
@@ -99,10 +100,19 @@ def display_results(eval_result, miou, title=None):
     display_data = [[f"Rank@{i},mIoU@{j}" for i in recalls for j in tious] + ["mIoU"]]
     eval_result = eval_result * 100
     miou = miou * 100
+
+    # wandb logging
+    log_dict = {f"{split}/mIoU": miou}
+    for i, t in enumerate(tious):
+        for j, r in enumerate(recalls):
+            log_dict[f"{split}/R@{r},IoU={t}"] = eval_result[i][j]
+    wandb.log(log_dict, commit=False)
+
+    # terminaltables logging
     display_data.append(
         [f"{eval_result[j][i]:.02f}" for i in range(len(recalls)) for j in range(len(tious))] + [f"{miou:.02f}"]
     )
-    table = AsciiTable(display_data, title)
+    table = AsciiTable(display_data, f"performance on {split} set")
     for i in range(len(tious) * len(recalls)):
         table.justify_columns[i] = "center"
     return table.table
@@ -148,4 +158,4 @@ if __name__ == "__main__":
     prior = [list(item) for item in prior]
     prediction = [prior for d in val_data]
 
-    eval_predictions(prediction, val_data)
+    eval_predictions(prediction, val_data, "val")

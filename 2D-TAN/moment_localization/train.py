@@ -8,6 +8,7 @@ import datasets
 import models
 import numpy as np
 import torch
+import wandb
 from core import eval
 from core.config import config, update_config
 from core.engine import Engine
@@ -70,6 +71,9 @@ if __name__ == "__main__":
     logger, final_output_dir = create_logger(config, args.cfg, config.TAG)
     logger.info("\n" + pprint.pformat(args))
     logger.info("\n" + pprint.pformat(config))
+
+    wandb_run = wandb.init(project="2DTAN", dir=config.LOG_DIR, config=config)
+    run_path = os.path.join(config.LOG_DIR, wandb_run.id)
 
     # cudnn related setting
     cudnn.benchmark = config.CUDNN.BENCHMARK
@@ -194,6 +198,9 @@ if __name__ == "__main__":
         if config.VERBOSE:
             state["progress_bar"].update(1)
 
+        if state["t"] % 50 == 0:
+            wandb.log({"train/loss": state["loss_meter"].avg}, step=state["t"], epoch=state["epoch"])
+
         if state["t"] % state["test_interval"] == 0:
             model.eval()
             if config.VERBOSE:
@@ -203,34 +210,30 @@ if __name__ == "__main__":
             table_message = ""
             if config.TEST.EVAL_TRAIN:
                 train_state = engine.test(network, iterator("train_no_shuffle"), "train")
-                train_table = eval.display_results(
-                    train_state["Rank@N,mIoU@M"], train_state["miou"], "performance on training set"
-                )
+                train_table = eval.display_results(train_state["Rank@N,mIoU@M"], train_state["miou"], "train")
                 table_message += "\n" + train_table
             if not config.DATASET.NO_VAL:
                 val_state = engine.test(network, iterator("val"), "val")
                 state["scheduler"].step(-val_state["loss_meter"].avg)
                 loss_message += " val loss {:.4f}".format(val_state["loss_meter"].avg)
+                wandb.log({"val/loss": val_state["loss_meter"].avg}, step=state["t"])
                 val_state["loss_meter"].reset()
-                val_table = eval.display_results(
-                    val_state["Rank@N,mIoU@M"], val_state["miou"], "performance on validation set"
-                )
+                val_table = eval.display_results(val_state["Rank@N,mIoU@M"], val_state["miou"], "val")
                 table_message += "\n" + val_table
 
             test_state = engine.test(network, iterator("test"), "test")
             loss_message += " test loss {:.4f}".format(test_state["loss_meter"].avg)
+            wandb.log({"test/loss": test_state["loss_meter"].avg}, step=state["t"])
             test_state["loss_meter"].reset()
-            test_table = eval.display_results(
-                test_state["Rank@N,mIoU@M"], test_state["miou"], "performance on testing set"
-            )
+            test_table = eval.display_results(test_state["Rank@N,mIoU@M"], test_state["miou"], "test")
             table_message += "\n" + test_table
 
             message = loss_message + table_message + "\n"
             logger.info(message)
 
             saved_model_path = os.path.join(
-                os.path.dirname(logger.root.handlers[0].baseFilename),
-                "checkpoins",
+                run_path,
+                "checkpoints",
             )
             os.makedirs(saved_model_path, exist_ok=True)
             saved_model_filename = os.path.join(
@@ -296,7 +299,7 @@ if __name__ == "__main__":
     def on_test_end(state):
         annotations = state["iterator"].dataset.annotations
         state["Rank@N,mIoU@M"], state["miou"] = eval.eval_predictions(
-            state["sorted_segments_list"], annotations, verbose=False
+            state["sorted_segments_list"], annotations, "test", verbose=False
         )
         if config.VERBOSE:
             state["progress_bar"].close()
