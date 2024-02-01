@@ -15,7 +15,7 @@ DATASET:
 
 TEST:
   BATCH_SIZE: 32
-  RECALL: 1,5
+  RECALL: 1,3,5
   TIOU: 0.1,0.3,0.5,0.7
   EVAL_TRAIN: False
   NMS_THRESH: 0.5
@@ -78,4 +78,5 @@ TAN:
 
 MODEL:
   NAME: TAN
-  CHECKPOINT: ./checkpoints/IAW/TAN_c3d/iter005852-0.4208-0.6247.pkl
+  CHECKPOINT: /data/jiahao/logs/2dtan/checkpoints/IAW/TAN_c3d/iter009548-0.4322-0.6335.pkl
+  # CHECKPOINT: /data/jiahao/logs/2dtan/checkpoints/IAW/TAN_c3d/iter009548-0.4254-0.6518.pkl

@@ -5,3 +5,7 @@ PYTHONPATH=/home/users/u6921098/project/VideoX/2D-TAN/lib; python moment_localiz
 PYTHONPATH=/home/users/u6921098/project/VideoX/2D-TAN/lib; python moment_localization/train.py --cfg experiments/iaw/2D-TAN-pool.yaml --verbose
 
 PYTHONPATH=/home/users/u6921098/project/VideoX/2D-TAN/lib; python moment_localization/train.py --cfg experiments/iaw/2D-TAN-conv.yaml --verbose
+
+PYTHONPATH=/home/users/u6921098/project/VideoX/2D-TAN/lib; python moment_localization/test.py --cfg experiments/iaw/2D-TAN-pool.yaml --verbose --split test
+
+PYTHONPATH=/home/users/u6921098/project/VideoX/2D-TAN/lib; python moment_localization/test.py --cfg experiments/iaw/2D-TAN-conv.yaml --verbose --split test
